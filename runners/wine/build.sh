@@ -21,7 +21,7 @@ arch=$(uname -m)
 version="1.8"
 configure_opts="--disable-tests --with-x --with-gstreamer"
 
-params=$(getopt -n $0 -o a:b:w:v:p:snd6kfc --long as:,branch:,with:,version:,patch:,staging,noupload,dependencies,64bit,keep,keep-destination-file,useccache -- "$@")
+params=$(getopt -n $0 -o a:b:w:v:p:snd6kfc: --long as:,branch:,with:,version:,patch:,staging,noupload,dependencies,64bit,keep,keep-destination-file,useccache: -- "$@")
 eval set -- $params
 while true ; do
     case "$1" in
@@ -92,12 +92,12 @@ DownloadWine() {
         branch_name=${branch_name:-$build_name}
         if [ -d "$source_dir" ]; then
           git -C "$source_dir" clean -dfx
-          if [[ `git -C "$source_dir" branch -v | grep -o -E "$branch_name\s+"` ]]; then
+          if [ $(git -C "$source_dir" branch -v | grep -o -E "$branch_name\s+") ]; then
                 git -C "$source_dir" branch -m "$branch_name" "$branch_name"-old
           fi   
 	  git -C "$source_dir" fetch "$repo_url" "$branch_name":"$branch_name"
 	  git -C "$source_dir" checkout "$branch_name"
-          if [[ `git -C "$source_dir" branch -v | grep -o -E "$branch_name-old\s+"` ]]; then
+          if [ $(git -C "$source_dir" branch -v | grep -o -E "$branch_name-old\s+") ]; then
                 git -C "$source_dir" branch -D "$branch_name"-old
           fi                   
 	else
@@ -251,6 +251,9 @@ Send64BitBuildAndBuild32bit() {
     fi
     if [ "$branch_name" ]; then
         opts="${opts} --branch $branch_name"
+    fi
+    if [ "$CCACHE" ]; then
+        opts="${opts} --useccache"
     fi
 
     echo "Building 32bit wine on 32bit container"
