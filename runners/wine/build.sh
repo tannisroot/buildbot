@@ -21,7 +21,7 @@ arch=$(uname -m)
 version="1.8"
 configure_opts="--disable-tests --with-x --with-gstreamer"
 
-params=$(getopt -n $0 -o a:b:w:v:p:snd6kfc: --long as:,branch:,with:,version:,patch:,staging,noupload,dependencies,64bit,keep,keep-destination-file,useccache: -- "$@")
+params=$(getopt -n $0 -o a:b:w:v:p:snd6kfc --long as:,branch:,with:,version:,patch:,staging,noupload,dependencies,64bit,keep,keep-destination-file,useccache -- "$@")
 eval set -- $params
 while true ; do
     case "$1" in
