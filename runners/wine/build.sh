@@ -225,6 +225,7 @@ Send64BitBuildAndBuild32bit() {
 
     # Package the 64bit build (in a wine64 folder)
     echo "Sending the 64bit build to the 32bit container"
+    dest_file="${bin_dir}-build.tar.gz"
     mv wine wine64
     tar czf ${dest_file} wine64
     scp ${dest_file} ${buildbot32host}:${root_dir}
